@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
+
 public class TicTacToe {
 
     static ArrayList<Integer> playerPositions = new ArrayList<Integer>();
@@ -103,7 +104,7 @@ public class TicTacToe {
         
         for(List i : winning) {
           if(playerPositions.containsAll(i)) {
-              return "Congradualation, you won";
+              return "Congratulations, you won";
           }
           else if(cpuPositions.containsAll(i)) {
             return "CPU Wins";
@@ -128,21 +129,53 @@ public class TicTacToe {
         printGameBoard(gameBoard);
 
 
-        Scanner scan = new Scanner(System.in);
+       
 
         //to keep the human and cpu method going
         while(true){
-        System.out.println("Enter your placement (1-9): ");
-        int position = scan.nextInt();
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Enter your placement (1-9): ");
+            int position = scan.nextInt();
+            //this is so the player will not enter in the same location as the computer
+            while(playerPositions.contains(position) || cpuPositions.contains(position)) {
+                System.out.println("Position taken, enter a free location");
+                position = scan.nextInt();
+            }
 
-        //System.out.println(position);
-        placePiece(position, gameBoard, "human");
-        Random rand = new Random();
-        int randNum = rand.nextInt(10);
-        System.out.println(randNum);
-        placePiece(randNum, gameBoard, "cpu");
-        printGameBoard(gameBoard);
-        checkWinner();
+
+            //System.out.println(position);
+            placePiece(position, gameBoard, "human");
+            //check to see if human won after putting down final choice
+            String result = checkWinner();
+            //check result after each human move
+            if(result.length() > 0) {
+                System.out.println(result);
+                //print final board pieces
+                printGameBoard(gameBoard);
+                break;
+            }
+            
+            Random rand = new Random();
+            int randNum = rand.nextInt(10);
+            // this will check to see that the computer will not put in the same location as you
+            while(playerPositions.contains(randNum) || cpuPositions.contains(randNum)) {
+                randNum = rand.nextInt(10);
+            }
+
+            placePiece(randNum, gameBoard, "cpu");
+
+            printGameBoard(gameBoard);
+
+
+             result = checkWinner();
+            if(result.length() > 0) {
+                //check result after each cpu move
+                System.out.println(result);
+                //print final board pieces
+                printGameBoard(gameBoard);
+                break;
+            }
+
         }
     }
 
